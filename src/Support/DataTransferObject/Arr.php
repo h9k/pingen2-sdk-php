@@ -23,7 +23,7 @@ class Arr
      * @param string[] $keys
      * @return array<mixed>
      */
-    public static function except(mixed $array, array $keys): array
+    public static function except($array, array $keys): array
     {
         return static::forget($array, $keys);
     }
@@ -33,7 +33,7 @@ class Arr
      * @param string[] $keys
      * @return array<mixed>
      */
-    public static function forget(mixed $array, array $keys): array
+    public static function forget(array $array, array $keys): array
     {
         if (count($keys) === 0) {
             return $array;
@@ -65,7 +65,12 @@ class Arr
         return $array;
     }
 
-    public static function exists(mixed $array, string $key): bool
+    /**
+     * @param mixed $array
+     * @param string $key
+     * @return bool
+     */
+    public static function exists($array, string $key): bool
     {
         if ($array instanceof ArrayAccess) {
             return $array->offsetExists($key); // @codeCoverageIgnore

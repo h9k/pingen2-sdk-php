@@ -4,7 +4,12 @@ namespace Pingen\Support\DataTransferObject;
 
 class Str
 {
-    public static function contains(string $string, mixed $searches): bool
+    /**
+     * @param string $string
+     * @param mixed $searches
+     * @return bool
+     */
+    public static function contains(string $string, $searches): bool
     {
         $searches = (array) $searches;
 

@@ -80,7 +80,10 @@ class DummyDTO extends DataTransferObject
     public ?object $object;
     public ?array $array;
     public ?\ArrayAccess $array_access;
-    public mixed $mixed;
+    /**
+     * @var mixed
+     */
+    public $mixed;
 
     protected bool $ignoreMissing = false;
 }

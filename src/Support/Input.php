@@ -73,7 +73,7 @@ abstract class Input implements Arrayable
         $properties = [];
         $errorMsg = [];
 
-        $class = new \ReflectionClass($this::class);
+        $class = new \ReflectionClass(get_class($this));
 
         foreach ($class->getProperties(\ReflectionProperty::IS_PROTECTED) as $reflectionProperty) {
             $field = $reflectionProperty->getName();

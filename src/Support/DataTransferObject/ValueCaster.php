@@ -4,7 +4,12 @@ namespace Pingen\Support\DataTransferObject;
 
 class ValueCaster
 {
-    public function cast(mixed $value, FieldValidator $validator): mixed
+    /**
+     * @param mixed $value
+     * @param FieldValidator $validator
+     * @return mixed|DataTransferObject|mixed
+     */
+    public function cast($value, FieldValidator $validator)
     {
         return $this->shouldBeCastToCollection($value)
             ? $this->castCollection($value, $validator->allowedArrayTypes)
@@ -16,7 +21,7 @@ class ValueCaster
      * @param array $allowedTypes
      * @return mixed|DataTransferObject
      */
-    public function castValue(mixed $value, array $allowedTypes)
+    public function castValue($value, array $allowedTypes)
     {
         $castTo = null;
 
@@ -37,7 +42,12 @@ class ValueCaster
         return new $castTo($value);
     }
 
-    public function castCollection(mixed $values, array $allowedArrayTypes): mixed
+    /**
+     * @param mixed $values
+     * @param array $allowedArrayTypes
+     * @return array|mixed
+     */
+    public function castCollection($values, array $allowedArrayTypes)
     {
         $castTo = null;
 

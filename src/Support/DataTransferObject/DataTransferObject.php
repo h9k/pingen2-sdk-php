@@ -170,7 +170,13 @@ abstract class DataTransferObject
         });
     }
 
-    protected function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, mixed $value): mixed
+    /**
+     * @param ValueCaster $valueCaster
+     * @param FieldValidator $fieldValidator
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function castValue(ValueCaster $valueCaster, FieldValidator $fieldValidator, $value)
     {
         if (is_array($value)) {
             return $valueCaster->cast($value, $fieldValidator);
@@ -179,7 +185,12 @@ abstract class DataTransferObject
         return $this->makeValue($fieldValidator, $value);
     }
 
-    protected function makeValue(FieldValidator $fieldValidator, mixed $value): mixed
+    /**
+     * @param FieldValidator $fieldValidator
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function makeValue(FieldValidator $fieldValidator, $value)
     {
         foreach ($fieldValidator->allowedTypes as $type) {
             $type = ltrim($type, '\\');

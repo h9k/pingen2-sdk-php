@@ -51,7 +51,11 @@ abstract class FieldValidator
         return new PropertyFieldValidator($property);
     }
 
-    public function isValidType(mixed $value): bool
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    public function isValidType($value): bool
     {
         if (! $this->hasTypeDeclaration) {
             return true;
@@ -130,7 +134,11 @@ abstract class FieldValidator
         return true;
     }
 
-    private function isValidValue(mixed $value): bool
+    /**
+     * @param mixed $value
+     * @return bool
+     */
+    private function isValidValue($value): bool
     {
         foreach ($this->allowedTypes as $type) {
             // We'll check the type of this value against all allowed types, if one matches we're good
@@ -144,7 +152,12 @@ abstract class FieldValidator
         return false;
     }
 
-    private function assertValidType(string $type, mixed $value): bool
+    /**
+     * @param string $type
+     * @param mixed $value
+     * @return bool
+     */
+    private function assertValidType(string $type, $value): bool
     {
         return $value instanceof $type || gettype($value) === $type;
     }

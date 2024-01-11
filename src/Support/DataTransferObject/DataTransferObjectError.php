@@ -24,11 +24,18 @@ class DataTransferObjectError extends TypeError
         throw new self($msg);
     }
 
+    /**
+     * @param string $class
+     * @param string $field
+     * @param array $expectedTypes
+     * @param mixed $value
+     * @return string
+     */
     public static function invalidTypeMessage(
         string $class,
         string $field,
         array $expectedTypes,
-        mixed $value
+        $value
     ): string {
         $currentType = gettype($value);
 
