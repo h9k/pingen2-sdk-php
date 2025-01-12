@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Pingen;
 
 use Carbon\CarbonImmutable;
-use Illuminate\Http\Client\Factory as HttpClient;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
+use Illuminate\Support\Facades\Http as HttpClient;
 use League\OAuth2\Client\Token\AccessToken;
 use Pingen\Exceptions\JsonApiException;
 use Pingen\Exceptions\RateLimitJsonApiException;
@@ -183,7 +183,7 @@ abstract class ResourceEndpoint
      * @throws \Illuminate\Http\Client\RequestException
      * @throws RateLimitJsonApiException
      */
-    protected function performPostRequest(string $endpoint, string $type, Input $body)
+    protected function performPostRequest(string $endpoint, string $type, Input $body): Response
     {
         return $this->setOnErrorCallbackForJsonApiResponses(
             $this->getAuthenticatedJsonApiRequest()
@@ -204,7 +204,7 @@ abstract class ResourceEndpoint
      * @return Response
      * @throws JsonApiException
      */
-    protected function performDeleteRequest(string $endpoint)
+    protected function performDeleteRequest(string $endpoint): Response
     {
         return $this->setOnErrorCallbackForJsonApiResponses(
             $this->getAuthenticatedJsonApiRequest()
@@ -218,11 +218,11 @@ abstract class ResourceEndpoint
      * @param string $endpoint
      * @param string $type
      * @param string $id
-     * @param Input $body
+     * @param Input|null $body
      * @return Response
      * @throws JsonApiException
      */
-    protected function performPatchRequest(string $endpoint, string $type, string $id, Input $body = null)
+    protected function performPatchRequest(string $endpoint, string $type, string $id, Input $body = null): Response
     {
         $data = [];
 
@@ -254,7 +254,7 @@ abstract class ResourceEndpoint
     protected function performPutFileRequest(string $url, $tmpFile): void
     {
         $this->getHttpClient()
-            ->bodyFormat('none')
+            ::bodyFormat('none')
             ->withOptions([
                 'body' => $tmpFile,
                 'headers' => [
@@ -285,13 +285,12 @@ abstract class ResourceEndpoint
 
     /**
      * @return PendingRequest
-     * @throws \League\OAuth2\Client\Provider\Exception\IdentityProviderException
      */
     protected function getAuthenticatedRequest(): PendingRequest
     {
         return $this->getHttpClient()
-            ->timeout(self::DEFAULT_REQUEST_TIMEOUT)
-            ->withUserAgent('PINGEN.SDK.PHP')
+            ::timeout(self::DEFAULT_REQUEST_TIMEOUT)
+            ->withHeaders(['User-Agent' => 'PINGEN.SDK.PHP'])
             ->withToken($this->getAccessToken()->getToken());
     }
 
@@ -302,13 +301,12 @@ abstract class ResourceEndpoint
      */
     protected function setOnErrorCallbackForJsonApiResponses(Response $response): Response
     {
-        return $response->onError(
-            function (Response $response): void {
-                if ($response->status() === \Symfony\Component\HttpFoundation\Response::HTTP_TOO_MANY_REQUESTS) {
-                    throw new RateLimitJsonApiException($response);
-                }
-                throw new JsonApiException($response);
+        if ($response->failed()) {
+            if ($response->status() === \Symfony\Component\HttpFoundation\Response::HTTP_TOO_MANY_REQUESTS) {
+                throw new RateLimitJsonApiException($response);
             }
-        );
+            throw new JsonApiException($response);
+        }
+        return $response;
     }
 }
